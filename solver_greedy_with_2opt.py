@@ -96,7 +96,7 @@ class LineSegment:
                 else:
                     cross_point_x = -(self.intercept - other.intercept) / (
                         self.slope - other.slope
-                    )  # 交点
+                    )
                     # 交点のx座標がself上にあるか
                     if self.min_x <= cross_point_x and cross_point_x <= self.max_x:
                         return True
@@ -159,23 +159,22 @@ def solve(cities, tour, min_path_length=0):
     min_path_length = sum(
         distance(cities[tour[i]], cities[tour[(i + 1) % N]]) for i in range(N)
     )
-    for idx, city in enumerate(tour):
-        current_city_idx = idx
-        if idx + 1 >= len(tour):
+    for i, city in enumerate(tour):
+        current_city_idx = i
+        if i >= len(tour) - 1:
             # 交差ほどき完了
             return tour
-        line = LineSegment(cities[city], cities[tour[idx + 1]])
-        idx += 2
+        line = LineSegment(cities[city], cities[tour[i + 1]])
 
         # あるcityとその次のcityを繋いだ線と交差する線があるか見ていく
-        while idx < len(tour) - 2:
-            line_other = LineSegment(cities[tour[idx]], cities[tour[idx + 1]])
+        for j in range(i + 2, len(tour)):
+            line_other = LineSegment(cities[tour[j]], cities[tour[j + 1]])
             if line.is_cross(line_other):
                 # city1とcity3を,city2とcity4をつなぐ
                 new_tour = (
                     tour[: current_city_idx + 1]
-                    + [i for i in reversed(tour[current_city_idx + 1 : idx + 1])]
-                    + tour[idx + 1 :]
+                    + [city for city in reversed(tour[current_city_idx + 1 : j + 1])]
+                    + tour[j + 1 :]
                 )
                 path_length = sum(
                     distance(cities[new_tour[i]], cities[new_tour[(i + 1) % N]])
@@ -186,7 +185,6 @@ def solve(cities, tour, min_path_length=0):
                     return solve(cities, new_tour, min_path_length)
                 else:
                     break
-            idx += 1
 
 
 if __name__ == "__main__":
