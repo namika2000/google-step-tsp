@@ -167,7 +167,7 @@ def solve(cities, tour, min_path_length=0):
         line = LineSegment(cities[city], cities[tour[i + 1]])
 
         # あるcityとその次のcityを繋いだ線と交差する線があるか見ていく
-        for j in range(i + 2, len(tour)):
+        for j in range(i + 2, len(tour) - 1):
             line_other = LineSegment(cities[tour[j]], cities[tour[j + 1]])
             if line.is_cross(line_other):
                 # city1とcity3を,city2とcity4をつなぐ
