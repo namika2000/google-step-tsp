@@ -152,41 +152,44 @@ def count_cross(tour, cities):
     return num_of_cross
 
 
-# 計算量に改善の余地あり
 # 交差する点同士を交換する時に、交換してスコアがよくなるなら交換、そうでないならその交差は飛ばす
-def solve(cities, tour, min_path_length=0):
+def solve(cities, tour, min_path_length, ans=[]):
     N = len(cities)
-    min_path_length = sum(
-        distance(cities[tour[i]], cities[tour[(i + 1) % N]]) for i in range(N)
-    )
     for i, city in enumerate(tour):
-        current_city_idx = i
-        if i >= len(tour) - 1:
-            # 交差ほどき完了
-            return tour
+        if i >= len(tour) - 3:
+            break
         line = LineSegment(cities[city], cities[tour[i + 1]])
-
         # あるcityとその次のcityを繋いだ線と交差する線があるか見ていく
         for j in range(i + 2, len(tour) - 1):
             line_other = LineSegment(cities[tour[j]], cities[tour[j + 1]])
             if line.is_cross(line_other):
                 # city1とcity3を,city2とcity4をつなぐ
                 new_tour = (
-                    tour[: current_city_idx + 1]
-                    + [city for city in reversed(tour[current_city_idx + 1 : j + 1])]
+                    tour[: i + 1]
+                    + [city for city in reversed(tour[i + 1 : j + 1])]
                     + tour[j + 1 :]
                 )
+                all_tour = ans + new_tour
                 path_length = sum(
-                    distance(cities[new_tour[i]], cities[new_tour[(i + 1) % N]])
+                    distance(cities[all_tour[i]], cities[all_tour[(i + 1) % N]])
                     for i in range(N)
                 )
                 if path_length < min_path_length:
                     min_path_length = path_length
-                    return solve(cities, new_tour, min_path_length)
+                    ans += new_tour[: i + 1]
+                    tour = new_tour[i + 1 :]
+                    return solve(cities, tour, min_path_length, ans)
+    ans = ans + tour
+    return ans
 
 
 if __name__ == "__main__":
     assert len(sys.argv) > 1
     cities = read_input(sys.argv[1])
-    tour = solve(cities, solver_greedy(cities))
+    N = len(cities)
+    tour = solver_greedy(cities)
+    min_path_length = sum(
+        distance(cities[tour[i]], cities[tour[(i + 1) % N]]) for i in range(N)
+    )
+    tour = solve(cities, tour, min_path_length)
     print_tour(tour)
