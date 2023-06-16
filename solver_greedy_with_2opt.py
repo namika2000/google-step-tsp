@@ -183,8 +183,6 @@ def solve(cities, tour, min_path_length=0):
                 if path_length < min_path_length:
                     min_path_length = path_length
                     return solve(cities, new_tour, min_path_length)
-                else:
-                    break
 
 
 if __name__ == "__main__":
