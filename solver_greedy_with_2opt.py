@@ -152,9 +152,8 @@ def count_cross(tour, cities):
     return num_of_cross
 
 
-# 計算量を改善 + リファクタリング済み
 # 交差する点同士を交換する時に、交換してスコアがよくなるなら交換、そうでないならその交差は飛ばす
-def update_solve(cities, tour, min_path_length, ans=[]):
+def solve(cities, tour, min_path_length, ans=[]):
     N = len(cities)
     for i, city in enumerate(tour):
         if i >= len(tour) - 3:
