@@ -4,7 +4,7 @@ import math
 
 from common import read_input
 
-CHALLENGES = 6
+CHALLENGES = 7
 
 
 def distance(city1, city2):
